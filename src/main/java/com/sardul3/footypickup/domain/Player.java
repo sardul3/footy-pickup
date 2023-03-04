@@ -21,16 +21,16 @@ public class Player {
     @Id
     private String id;
 
-    @NotNull(message="first name cannot be empty")
-    @Size(min=1, message="first name must have at least one character")
+    @NotNull(message="{player.firstName.notNull.message}")
+    @Size(min=1, message="{player.firstName.notNull.message}")
     private String firstName;
 
-    @NotNull(message="last name cannot be empty")
-    @Size(min=1, message="last name must have at least one character")
+    @NotNull(message="{player.lastName.notNull.message}")
+    @Size(min=1, message="{player.lastName.notNull.message}")
     private String lastName;
 
-    @Min(value=1, message="shirt number must be within 1 - 99")
-    @Max(value=99, message="shirt number must be within 1 - 99")
+    @Min(value=1, message="{player.shirtNumber.validRange.message}")
+    @Max(value=99, message="{player.shirtNumber.validRange.message}")
     private int shirtNumber;
     private PlayerPosition playerPosition;
     private boolean isCaptain;
