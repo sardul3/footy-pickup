@@ -52,4 +52,44 @@ class PlayerControllerTest {
                    assert entityExchangeResult.getResponseBody().getId() != null;
                });
     }
+
+    @Test
+    void createPlayer_withInvalidShirtNumber_shouldThrowBadRequest() {
+        // shirt number should be in the range of 1 to 100
+        var player = new Player(null, "John", "B",
+                125, PlayerPosition.RB, false);
+
+        webTestClient
+                .post()
+                .uri(BASE_URL)
+                .bodyValue(player)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(stringEntityExchangeResult -> {
+                    assert stringEntityExchangeResult.getResponseBody() != null;
+                    assert stringEntityExchangeResult.getResponseBody().contains("within 1 - 99");
+                });
+    }
+
+    @Test
+    void createPlayer_withEmptyFirstName_shouldThrowBadRequest() {
+        // First Name cannot be empty
+        var player = new Player(null, "", "B",
+                25, PlayerPosition.RB, false);
+
+        webTestClient
+                .post()
+                .uri(BASE_URL)
+                .bodyValue(player)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(stringEntityExchangeResult -> {
+                    assert stringEntityExchangeResult.getResponseBody() != null;
+                    assert stringEntityExchangeResult.getResponseBody().contains("first name must have at least one character");
+                });
+    }
 }

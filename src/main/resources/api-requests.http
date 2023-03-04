@@ -2,6 +2,22 @@ POST http://localhost:8080/v1/players
 Content-Type: application/json
 
 {
+  "firstName" : "Angel",
+  "lastName" : "G",
+  "shirtNumber": 30,
+  "playerPosition": "RB",
+  "isCaptain": false
+}
+
+###
+GET http://localhost:8080/v1/players
+Accept: application/json
+
+###
+POST http://localhost:8080/v1/players
+Content-Type: application/json
+
+{
   "firstName" : "Sagar",
   "lastName" : "Poudel",
   "shirtNumber": 3,
