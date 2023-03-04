@@ -1,0 +1,12 @@
+POST http://localhost:8080/v1/players
+Content-Type: application/json
+
+{
+  "firstName" : "Sagar",
+  "lastName" : "Poudel",
+  "shirtNumber": 3,
+  "playerPosition": "LB",
+  "isCaptain": false
+}
+
+###
