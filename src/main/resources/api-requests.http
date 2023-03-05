@@ -1,3 +1,4 @@
+// invalid player position
 POST http://localhost:8080/v1/players
 Content-Type: application/json
 
@@ -5,6 +6,20 @@ Content-Type: application/json
   "firstName" : "Angel",
   "lastName" : "G",
   "shirtNumber": 30,
+  "playerPosition": "LWB",
+  "isCaptain": false
+}
+
+###
+
+// invalid jersey number
+POST http://localhost:8080/v1/players
+Content-Type: application/json
+
+{
+  "firstName" : "Angel",
+  "lastName" : "G",
+  "shirtNumber": 130,
   "playerPosition": "RB",
   "isCaptain": false
 }

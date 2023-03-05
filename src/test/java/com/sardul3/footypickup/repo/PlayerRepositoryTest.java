@@ -25,10 +25,10 @@ class PlayerRepositoryTest {
     @BeforeEach
     void setUp() {
         var players = List.of(
-                new Player(null, "Sagar", "Poudel", 3, PlayerPosition.LB, true),
-                new Player(null, "Anup", "Ghimire", 1, PlayerPosition.GK, false),
-                new Player(null, "Angel", "Gyawali", 5, PlayerPosition.CB, false),
-                new Player(null, "Rahul", "Gauli", 10, PlayerPosition.CM, false)
+                new Player(null, "Sagar", "Poudel", 3, PlayerPosition.LB.name(), true),
+                new Player(null, "Anup", "Ghimire", 1, PlayerPosition.GK.name(), false),
+                new Player(null, "Angel", "Gyawali", 5, PlayerPosition.CB.name(), false),
+                new Player(null, "Rahul", "Gauli", 10, PlayerPosition.CM.name(), false)
                 );
         playerRepository.saveAll(players).blockLast();
     }
@@ -41,11 +41,11 @@ class PlayerRepositoryTest {
     @Test
     void saveShouldCreateANewPlayer() {
         var newPlayer= playerRepository.save(new Player(null, "John", "B",
-                13, PlayerPosition.RB, false));
+                13, PlayerPosition.RB.name(), false));
 
         StepVerifier.create(newPlayer)
                 .assertNext(player -> {
-                    assert player.getPlayerPosition() == PlayerPosition.RB;
+                    assert player.getPlayerPosition() == PlayerPosition.RB.toString();
                 })
                 .verifyComplete();
 

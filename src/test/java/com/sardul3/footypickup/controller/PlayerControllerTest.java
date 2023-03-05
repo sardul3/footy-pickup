@@ -38,7 +38,7 @@ class PlayerControllerTest {
     @Test
     void createPlayerPost() {
        var player = new Player(null, "John", "B",
-                13, PlayerPosition.RB, false);
+                13, "RB", false);
 
        webTestClient
                .post()
@@ -57,7 +57,7 @@ class PlayerControllerTest {
     void createPlayer_withInvalidShirtNumber_shouldThrowBadRequest() {
         // shirt number should be in the range of 1 to 100
         var player = new Player(null, "John", "B",
-                125, PlayerPosition.RB, false);
+                125, "RB", false);
 
         webTestClient
                 .post()
@@ -77,7 +77,7 @@ class PlayerControllerTest {
     void createPlayer_withEmptyFirstName_shouldThrowBadRequest() {
         // First Name cannot be empty
         var player = new Player(null, "", "B",
-                25, PlayerPosition.RB, false);
+                25, "RB", false);
 
         webTestClient
                 .post()
@@ -90,6 +90,46 @@ class PlayerControllerTest {
                 .consumeWith(stringEntityExchangeResult -> {
                     assert stringEntityExchangeResult.getResponseBody() != null;
                     assert stringEntityExchangeResult.getResponseBody().contains("first name must have at least one character");
+                });
+    }
+
+    @Test
+    void createPlayer_withEmptyPlayerPosition_shouldThrowBadRequest() {
+        // First Name cannot be empty
+        var player = new Player(null, "", "B",
+                25, null, false);
+
+        webTestClient
+                .post()
+                .uri(BASE_URL)
+                .bodyValue(player)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(stringEntityExchangeResult -> {
+                    assert stringEntityExchangeResult.getResponseBody() != null;
+                    assert stringEntityExchangeResult.getResponseBody().contains("position must be either of");
+                });
+    }
+
+    @Test
+    void createPlayer_withInvalidPlayerPosition_shouldThrowBadRequest() {
+        // First Name cannot be empty
+        var player = new Player(null, "", "B",
+                25, "LIWB", false);
+
+        webTestClient
+                .post()
+                .uri(BASE_URL)
+                .bodyValue(player)
+                .exchange()
+                .expectStatus()
+                .isBadRequest()
+                .expectBody(String.class)
+                .consumeWith(stringEntityExchangeResult -> {
+                    assert stringEntityExchangeResult.getResponseBody() != null;
+                    assert stringEntityExchangeResult.getResponseBody().contains("position must be either of");
                 });
     }
 }

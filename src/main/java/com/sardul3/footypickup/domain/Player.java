@@ -1,6 +1,7 @@
 package com.sardul3.footypickup.domain;
 
 
+import com.sardul3.footypickup.config.PlayerPositionValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,8 @@ public class Player {
     @Min(value=1, message="{player.shirtNumber.validRange.message}")
     @Max(value=99, message="{player.shirtNumber.validRange.message}")
     private int shirtNumber;
-    private PlayerPosition playerPosition;
+
+    @PlayerPositionValidator(enumClass = PlayerPosition.class, message = "{player.position.validRole.message}")
+    private String playerPosition;
     private boolean isCaptain;
 }
