@@ -1,8 +1,9 @@
 package com.sardul3.footypickup.controller;
 
 import com.sardul3.footypickup.domain.Player;
-//import com.sardul3.footypickup.dto.CreatePlayerRequest;
 import com.sardul3.footypickup.service.PlayerService;
+import com.sardul3.footypickup.util.ResourceGenerator;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +23,19 @@ public class PlayerController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<Player>> createPlayerPost(@Valid @RequestBody Player player) {
+    public Mono<ResponseEntity<Mono<EntityModel<Player>>>> createPlayerPost(@Valid @RequestBody Player player) {
         return playerService.addPlayer(player)
-                .map(play -> ResponseEntity.status(HttpStatus.CREATED).body(play));
+                .map(playerMono -> ResourceGenerator.getPlayerResource(playerMono))
+                .map(playerEntityModel -> ResponseEntity.status(HttpStatus.CREATED).body(playerEntityModel));
     }
 
     @GetMapping
     @ResponseBody
     public Mono<ResponseEntity<Flux<Player>>> getAllPlayers() {
-        var players = playerService.getAllPlayers();
+        Flux<Player> players = playerService.getAllPlayers();
+//        return ResourceGenerator.getPlayersResource(players)
+//                .map(playersEntityModel -> ResponseEntity.status(HttpStatus.OK).body(playersEntityModel));
+
         ResponseEntity response = ResponseEntity.status(HttpStatus.OK).body(players);
         return Mono.just(response);
     }

@@ -13,13 +13,13 @@ Content-Type: application/json
 ###
 
 // invalid jersey number
-POST http://localhost:8080/v1/players
+POST http://localhost:8080/v1/players/test
 Content-Type: application/json
 
 {
   "firstName" : "Angel",
   "lastName" : "G",
-  "shirtNumber": 130,
+  "shirtNumber": 30,
   "playerPosition": "RB",
   "isCaptain": false
 }

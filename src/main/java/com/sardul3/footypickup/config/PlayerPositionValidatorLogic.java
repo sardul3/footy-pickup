@@ -20,7 +20,7 @@ public class PlayerPositionValidatorLogic implements ConstraintValidator<PlayerP
     @Override
     public boolean isValid(CharSequence  playerPosition, ConstraintValidatorContext constraintValidatorContext) {
         if (playerPosition == null) {
-            return true;
+            return false;
         }
         return acceptedValues.contains(playerPosition.toString());
     }

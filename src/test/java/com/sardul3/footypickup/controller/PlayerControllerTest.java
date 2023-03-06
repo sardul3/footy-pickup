@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -96,7 +97,7 @@ class PlayerControllerTest {
     @Test
     void createPlayer_withEmptyPlayerPosition_shouldThrowBadRequest() {
         // First Name cannot be empty
-        var player = new Player(null, "", "B",
+        var player = new Player(null, "S", "B",
                 25, null, false);
 
         webTestClient
@@ -130,6 +131,37 @@ class PlayerControllerTest {
                 .consumeWith(stringEntityExchangeResult -> {
                     assert stringEntityExchangeResult.getResponseBody() != null;
                     assert stringEntityExchangeResult.getResponseBody().contains("position must be either of");
+                });
+    }
+
+    @Test
+    void createPlayer_returnsAHateosValidResponse() {
+        var player = new Player(null, "John", "Bigsby",
+                25, "LB", false);
+
+        webTestClient
+                .post()
+                .uri(BASE_URL)
+                .bodyValue(player)
+                .exchange()
+                .expectStatus()
+                .isCreated()
+                .expectBody()
+                .jsonPath("$.links[0].rel").isEqualTo("player")
+                .jsonPath("$.links[1].rel").isEqualTo("all_players");
+    }
+
+    @Test
+    void getAllPlayers() {
+        webTestClient
+                .get()
+                .uri(BASE_URL)
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBody()
+                .consumeWith(entityExchangeResult -> {
+                    assert entityExchangeResult.getResponseBody() != null;
                 });
     }
 }
