@@ -28,6 +28,7 @@ public class TeamService {
         return teamRepository.save(mappedTeam);
     }
 
+    //TODO: this needs to be replaced by a proper reactive and functional block of code
     public Mono<Team> addPlayerToExistingTeam(String teamId, String playerId) {
         return playerRepository.findById(playerId)
                 .zipWith(teamRepository.findById(teamId))

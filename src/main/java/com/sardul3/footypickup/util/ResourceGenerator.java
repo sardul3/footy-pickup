@@ -1,7 +1,9 @@
 package com.sardul3.footypickup.util;
 
+import com.sardul3.footypickup.controller.MatchController;
 import com.sardul3.footypickup.controller.PlayerController;
 import com.sardul3.footypickup.controller.TeamController;
+import com.sardul3.footypickup.domain.Match;
 import com.sardul3.footypickup.domain.Player;
 import com.sardul3.footypickup.domain.Team;
 import com.sardul3.footypickup.dto.CreateTeamRequest;
@@ -16,6 +18,7 @@ import java.util.List;
 import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
 
+//TODO: research in depth on HATEAOS
 public class ResourceGenerator {
     private ResourceGenerator() {}
 
@@ -43,6 +46,16 @@ public class ResourceGenerator {
                                         .withRel("team").toMono();
         Mono<List<Link>> entityLinkList = Flux.concat(createdTeamLink).collectList();
         Mono<EntityModel<Team>> entityMono = entityLinkList.map(links -> EntityModel.of(team, links));
+        return entityMono;
+    }
+
+    public static Mono<EntityModel<Match>> getMatchResource(Match match) {
+        Class<MatchController> controllerClass = MatchController.class;
+        Mono<Link> createdMatchLink = linkTo(methodOn(controllerClass)
+                .createMatchPost(match))
+                .withRel("match").toMono();
+        Mono<List<Link>> entityLinkList = Flux.concat(createdMatchLink).collectList();
+        Mono<EntityModel<Match>> entityMono = entityLinkList.map(links -> EntityModel.of(match, links));
         return entityMono;
     }
 }

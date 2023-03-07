@@ -28,5 +28,6 @@ public class Team {
 
 //    @NotEmpty( message="{team.players.minimum.message}")
 //    @TeamPlayersValidator
+    // TODO: figure out how to validate this when creating matches
     private List<Player> players;
 }

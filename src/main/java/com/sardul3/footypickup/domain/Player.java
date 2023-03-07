@@ -1,7 +1,7 @@
 package com.sardul3.footypickup.domain;
 
 
-import com.sardul3.footypickup.config.PlayerPositionValidator;
+import com.sardul3.footypickup.validation.playerposition.PlayerPositionValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -10,6 +10,9 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+//TODO: add a new error message format
+//TODO: create custom exceptions and catch them here
 @ControllerAdvice
 public class PlayerValidationAdvice {
 

@@ -39,6 +39,7 @@ public class TeamController {
 
     @GetMapping
     @ResponseBody
+    // TODO: implement HATAEOS for all endpoints
     public Mono<ResponseEntity<Flux<Player>>> getAllTeams() {
         Flux<Team> teams = teamService.getAllTeams();
 //        return ResourceGenerator.getPlayersResource(players)

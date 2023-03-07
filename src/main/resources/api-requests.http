@@ -1,21 +1,58 @@
-GET http://localhost:8080/v1/teams
-Accept: application/json
+
 
 ###
-POST http://localhost:8080/v1/teams/6406d06093c8651183ae0f2c/player/6406cc0419b70c1706d15ed6/add
-###
-###
-POST http://localhost:8080/v1/teams/6406cb9819b70c1706d15ed4/player/6406cc0419b70c1706d15ed6/add
-###
+// PLAYER
+
+### create a player
+POST http://localhost:8080/v1/players
+Content-Type: application/json
+
+{
+  "firstName" : "Anup",
+  "lastName" : "Ghimire",
+  "shirtNumber": 1,
+  "playerPosition": "GK",
+  "isCaptain": false
+}
+
+### Get all players
+GET http://localhost:8080/v1/players
+Accept: application/json
+
+// TEAM
+### Create a team
 POST http://localhost:8080/v1/teams
 Content-Type: application/json
 
 {
-  "name": "Lioness FC"
+  "name": "Lioness South FC"
+}
+### Add a player to the team
+POST http://localhost:8080/v1/teams/6406d06093c8651183ae0f2c/player/6406cc0419b70c1706d15ed6/add
+
+### Get the list of all teams
+GET http://localhost:8080/v1/teams
+Accept: application/json
+
+// Matches
+### Create a new match
+POST http://localhost:8080/v1/matches
+Content-Type: application/json
+
+{
+  "numberOfPlayersPerSide": 4
 }
 
-###
-// invalid player position
+### Add a team to the match
+POST http://localhost:8080/v1/matches/6407c17e59418425de1b2906/team/6406cb9819b70c1706d15ed4/add
+
+### start a match
+POST http://localhost:8080/v1/matches/6407c17e59418425de1b2906/start
+Content-Type: application/json
+
+{}
+
+### invalid player position
 POST http://localhost:8080/v1/players
 Content-Type: application/json
 
@@ -27,34 +64,4 @@ Content-Type: application/json
   "isCaptain": false
 }
 
-###
 
-// invalid jersey number
-POST http://localhost:8080/v1/players/test
-Content-Type: application/json
-
-{
-  "firstName" : "Angel",
-  "lastName" : "G",
-  "shirtNumber": 30,
-  "playerPosition": "RB",
-  "isCaptain": false
-}
-
-###
-GET http://localhost:8080/v1/players
-Accept: application/json
-
-###
-POST http://localhost:8080/v1/players
-Content-Type: application/json
-
-{
-  "firstName" : "Jodad",
-  "lastName" : "dfd",
-  "shirtNumber": 3,
-  "playerPosition": "LB",
-  "isCaptain": false
-}
-
-###

@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/players")
@@ -22,6 +23,12 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
+    /*
+        Spring provides fully non-blocking reading and streaming if the input to the controller is a reactive type.
+        TODO: replace Player with Mono<Player>
+        NOTE: validation will not be triggered if the passed in value is never used in the chain of operations in
+              spring-webflux
+     */
     @PostMapping
     public Mono<ResponseEntity<Mono<EntityModel<Player>>>> createPlayerPost(@Valid @RequestBody Player player) {
         return playerService.addPlayer(player)
@@ -33,9 +40,6 @@ public class PlayerController {
     @ResponseBody
     public Mono<ResponseEntity<Flux<Player>>> getAllPlayers() {
         Flux<Player> players = playerService.getAllPlayers();
-//        return ResourceGenerator.getPlayersResource(players)
-//                .map(playersEntityModel -> ResponseEntity.status(HttpStatus.OK).body(playersEntityModel));
-
         ResponseEntity response = ResponseEntity.status(HttpStatus.OK).body(players);
         return Mono.just(response);
     }
