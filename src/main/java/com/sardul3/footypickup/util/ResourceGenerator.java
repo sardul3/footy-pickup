@@ -1,7 +1,11 @@
 package com.sardul3.footypickup.util;
 
 import com.sardul3.footypickup.controller.PlayerController;
+import com.sardul3.footypickup.controller.TeamController;
 import com.sardul3.footypickup.domain.Player;
+import com.sardul3.footypickup.domain.Team;
+import com.sardul3.footypickup.dto.CreateTeamRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import reactor.core.publisher.Flux;
@@ -28,6 +32,17 @@ public class ResourceGenerator {
         Class<PlayerController> controllerClass = PlayerController.class;
         Mono<Link> allPlayersLink = linkTo(methodOn(controllerClass).getAllPlayers()).withRel("all_players").toMono();
         Mono<EntityModel<Flux<Player>>> entityMono = allPlayersLink.map(links -> EntityModel.of(players, links));
+        return entityMono;
+    }
+
+    public static Mono<EntityModel<Team>> getTeamResource(Team team) {
+        Class<TeamController> controllerClass = TeamController.class;
+        ModelMapper modelMapper = new ModelMapper();
+        Mono<Link> createdTeamLink = linkTo(methodOn(controllerClass)
+                                        .createNewTeam(modelMapper.map(team, CreateTeamRequest.class)))
+                                        .withRel("team").toMono();
+        Mono<List<Link>> entityLinkList = Flux.concat(createdTeamLink).collectList();
+        Mono<EntityModel<Team>> entityMono = entityLinkList.map(links -> EntityModel.of(team, links));
         return entityMono;
     }
 }

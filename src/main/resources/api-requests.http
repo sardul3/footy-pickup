@@ -1,3 +1,20 @@
+GET http://localhost:8080/v1/teams
+Accept: application/json
+
+###
+POST http://localhost:8080/v1/teams/6406d06093c8651183ae0f2c/player/6406cc0419b70c1706d15ed6/add
+###
+###
+POST http://localhost:8080/v1/teams/6406cb9819b70c1706d15ed4/player/6406cc0419b70c1706d15ed6/add
+###
+POST http://localhost:8080/v1/teams
+Content-Type: application/json
+
+{
+  "name": "Lioness FC"
+}
+
+###
 // invalid player position
 POST http://localhost:8080/v1/players
 Content-Type: application/json
@@ -33,8 +50,8 @@ POST http://localhost:8080/v1/players
 Content-Type: application/json
 
 {
-  "firstName" : "Sagar",
-  "lastName" : "Poudel",
+  "firstName" : "Jodad",
+  "lastName" : "dfd",
   "shirtNumber": 3,
   "playerPosition": "LB",
   "isCaptain": false

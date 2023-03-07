@@ -1,4 +1,4 @@
-package com.sardul3.footypickup.config;
+package com.sardul3.footypickup.validation.playerposition;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
