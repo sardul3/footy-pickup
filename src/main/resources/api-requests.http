@@ -60,7 +60,7 @@ Content-Type: application/json
   "firstName" : "Angel",
   "lastName" : "G",
   "shirtNumber": 30,
-  "playerPosition": "LWB",
+  "playerPosition": "CB",
   "isCaptain": false
 }
 

@@ -1,5 +1,6 @@
 package com.sardul3.footypickup.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -15,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Document
+@Builder
 public class Match {
     @Id
     private String id;

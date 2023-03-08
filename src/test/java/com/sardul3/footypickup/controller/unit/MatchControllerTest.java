@@ -29,8 +29,7 @@ public class MatchControllerTest {
 
     @Test
     void startMatch_shouldSetMatchStarted_toTrue() {
-        Match match = new Match();
-        match.setNumberOfPlayersPerSide(5);
+        Match match = Match.builder().numberOfPlayersPerSide(5).build();
         match.setGameStarted(true);
         when(matchService.startMatch(any())).thenReturn(Mono.just(match));
 
@@ -47,8 +46,8 @@ public class MatchControllerTest {
 
     @Test
     void addTeams_toMatch_shouldReturnNewMatch() {
-        Match match = new Match();
-        match.setNumberOfPlayersPerSide(5);
+        Match match = Match.builder().numberOfPlayersPerSide(5).build();
+
         match.setTeams(List.of(new Team(null, "Tigers FC", null)
                 ));
         when(matchService.addteamToExistingMatch(any(), any()))

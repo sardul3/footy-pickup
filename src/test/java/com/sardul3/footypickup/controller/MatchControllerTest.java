@@ -28,8 +28,10 @@ class MatchControllerTest {
 
     @Test
     void createMatchPost() {
-        Match match = new Match();
-        match.setNumberOfPlayersPerSide(5);
+        Match match = Match.builder()
+                .numberOfPlayersPerSide(5)
+                .gameMinutes(90)
+                .build();
 
         webTestClient
                 .post()

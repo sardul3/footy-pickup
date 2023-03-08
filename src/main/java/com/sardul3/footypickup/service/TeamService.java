@@ -3,6 +3,8 @@ package com.sardul3.footypickup.service;
 import com.sardul3.footypickup.domain.Player;
 import com.sardul3.footypickup.domain.Team;
 import com.sardul3.footypickup.dto.CreateTeamRequest;
+import com.sardul3.footypickup.exception.custom.EmptyResourceCollectionException;
+import com.sardul3.footypickup.exception.custom.ResourceNotFoundException;
 import com.sardul3.footypickup.repo.PlayerRepository;
 import com.sardul3.footypickup.repo.TeamRepository;
 import org.modelmapper.ModelMapper;
@@ -31,7 +33,10 @@ public class TeamService {
     //TODO: this needs to be replaced by a proper reactive and functional block of code
     public Mono<Team> addPlayerToExistingTeam(String teamId, String playerId) {
         return playerRepository.findById(playerId)
-                .zipWith(teamRepository.findById(teamId))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Player could not be found")))
+                .zipWith(teamRepository.findById(teamId)
+                        .switchIfEmpty(Mono.error(new ResourceNotFoundException("Team could not be found")))
+                )
                 .flatMap(tuple -> {
                     var p = tuple.getT1();
                     var t = tuple.getT2();
@@ -44,6 +49,7 @@ public class TeamService {
     }
 
     public Flux<Team> getAllTeams() {
-        return teamRepository.findAll();
+        return teamRepository.findAll()
+                .switchIfEmpty(Mono.error(new EmptyResourceCollectionException("No Teams present in DB")));
     }
 }

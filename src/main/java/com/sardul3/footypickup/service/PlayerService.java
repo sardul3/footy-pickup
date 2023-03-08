@@ -1,6 +1,7 @@
 package com.sardul3.footypickup.service;
 
 import com.sardul3.footypickup.domain.Player;
+import com.sardul3.footypickup.exception.custom.EmptyResourceCollectionException;
 import com.sardul3.footypickup.repo.PlayerRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -20,6 +21,7 @@ public class PlayerService {
     }
 
     public Flux<Player> getAllPlayers() {
-        return playerRepository.findAll();
+        return playerRepository.findAll()
+                .switchIfEmpty(Mono.error(new EmptyResourceCollectionException("No Players present in DB")));
     }
 }
