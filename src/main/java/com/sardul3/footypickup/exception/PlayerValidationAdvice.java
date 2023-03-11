@@ -2,9 +2,7 @@ package com.sardul3.footypickup.exception;
 
 import com.sardul3.footypickup.domain.ErrorMessage;
 import com.sardul3.footypickup.domain.WarningMessage;
-import com.sardul3.footypickup.exception.custom.EmptyResourceCollectionException;
-import com.sardul3.footypickup.exception.custom.MatchHasInvalidNumberOfTeamsException;
-import com.sardul3.footypickup.exception.custom.ResourceNotFoundException;
+import com.sardul3.footypickup.exception.custom.*;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -18,10 +16,8 @@ import org.springframework.web.bind.support.WebExchangeBindException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-
-//TODO: add a new error message format
-//TODO: create custom exceptions and catch them here
 @ControllerAdvice
 @Slf4j
 public class PlayerValidationAdvice {
@@ -32,15 +28,15 @@ public class PlayerValidationAdvice {
                 .getAllErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList());
+                .toList();
 
         ErrorMessage errorMessage = ErrorMessage.builder()
-                        .timestamp(LocalDateTime.now())
-                        .status(HttpStatus.BAD_REQUEST)
-                        .code("FOOTY-1002")
-                        .message("Validation Error")
-                        .errors(errors)
-                        .build();
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST)
+                .code("FOOTY-1002")
+                .message("Validation Error")
+                .errors(errors)
+                .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 
@@ -90,17 +86,55 @@ public class PlayerValidationAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> handleDuplicateResourceKey(ResourceAlreadyExistsException exception) {
+        var errors = List.of(exception
+                .getLocalizedMessage());
+
+        ErrorMessage errorMessage = ErrorMessage.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST)
+                .code("FOOTY-1003")
+                .message("Requested resource already exists, please create a new one")
+                .errors(errors)
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
     @ExceptionHandler(EmptyResourceCollectionException.class)
     public ResponseEntity<WarningMessage> handleNoResourcesPresent(EmptyResourceCollectionException exception) {
         var warning = exception.getLocalizedMessage();
 
         WarningMessage warningMessage = WarningMessage.builder()
                 .timestamp(LocalDateTime.now())
-                .code("FOOTY-200")
+                .code("FOOTY-2000")
                 .message(warning)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(warningMessage);
+    }
 
+    @ExceptionHandler(TeamDoesNotHaveMinimumNumberOfPlayersException.class)
+    public ResponseEntity<WarningMessage> handleUnbalancedPlayersInTeams(TeamDoesNotHaveMinimumNumberOfPlayersException exception) {
+        var warning = exception.getLocalizedMessage();
+
+        WarningMessage warningMessage = WarningMessage.builder()
+                .timestamp(LocalDateTime.now())
+                .code("FOOTY-2001")
+                .message(warning)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(warningMessage);
+    }
+
+    @ExceptionHandler(PlayerAlreadyExistsException.class)
+    public ResponseEntity<WarningMessage> handlePlayerAlreadyExistsInTeam(PlayerAlreadyExistsException exception) {
+        var warning = exception.getLocalizedMessage();
+
+        WarningMessage warningMessage = WarningMessage.builder()
+                .timestamp(LocalDateTime.now())
+                .code("FOOTY-2002")
+                .message(warning)
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(warningMessage);
     }
 }

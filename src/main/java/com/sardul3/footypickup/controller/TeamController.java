@@ -1,6 +1,5 @@
 package com.sardul3.footypickup.controller;
 
-import com.sardul3.footypickup.domain.Player;
 import com.sardul3.footypickup.domain.Team;
 import com.sardul3.footypickup.dto.CreateTeamRequest;
 import com.sardul3.footypickup.service.TeamService;
@@ -26,26 +25,22 @@ public class TeamController {
     @PostMapping
     public Mono<ResponseEntity<Mono<EntityModel<Team>>>> createNewTeam(@Valid @RequestBody CreateTeamRequest createTeamRequest) {
         return teamService.createNewTeam(createTeamRequest)
-                .map(teamMono -> ResourceGenerator.getTeamResource(teamMono))
+                .map(ResourceGenerator::getTeamResource)
                 .map(teamEntityModel -> ResponseEntity.status(HttpStatus.CREATED).body(teamEntityModel));
     }
 
     @PostMapping("/{teamId}/player/{playerId}/add")
     public Mono<ResponseEntity<Mono<EntityModel<Team>>>> addPlayerToTeam(@PathVariable String teamId, @PathVariable String playerId) {
         return teamService.addPlayerToExistingTeam(teamId, playerId)
-                .map(teamMono -> ResourceGenerator.getTeamResource(teamMono))
+                .map(ResourceGenerator::getTeamResource)
                 .map(teamEntityModel -> ResponseEntity.status(HttpStatus.CREATED).body(teamEntityModel));
     }
 
     @GetMapping
     @ResponseBody
-    // TODO: implement HATAEOS for all endpoints
-    public Mono<ResponseEntity<Flux<Player>>> getAllTeams() {
+    public Mono<ResponseEntity<Flux<Team>>> getAllTeams() {
         Flux<Team> teams = teamService.getAllTeams();
-//        return ResourceGenerator.getPlayersResource(players)
-//                .map(playersEntityModel -> ResponseEntity.status(HttpStatus.OK).body(playersEntityModel));
-
-        ResponseEntity response = ResponseEntity.status(HttpStatus.OK).body(teams);
+        var response = ResponseEntity.status(HttpStatus.OK).body(teams);
         return Mono.just(response);
     }
 }

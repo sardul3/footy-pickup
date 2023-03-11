@@ -21,6 +21,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.Set;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +48,7 @@ class TeamServiceTest {
 
     @Test
     void createNewTeam() {
-        Team team = new Team(null,"LFC", null );
+        Team team = new Team(null,"Liverpool", "LFC", null );
         CreateTeamRequest createTeamRequest = new ModelMapper().map(team, CreateTeamRequest.class);
         when(teamRepository.save(any())).thenReturn(Mono.just(team));
         StepVerifier.create(service.createNewTeam(createTeamRequest))
@@ -58,10 +60,10 @@ class TeamServiceTest {
 
     @Test
     void addPlayerToExistingTeam() {
-        var player = new Player("abc", "S", "P", 7, PlayerPosition.ST.name(), false);
+        var player = new Player("abc", "S", "P", 7, PlayerPosition.ST.name(), false, null);
 
         when(playerRepository.findById(any(String.class))).thenReturn(Mono.just(player));
-        when(teamRepository.findById(any(String.class))).thenReturn(Mono.just(new Team("def", "LFC", null)));
+        when(teamRepository.findById(any(String.class))).thenReturn(Mono.just(new Team("def", "Liverpool","LFC", null)));
 
         StepVerifier.create(service.addPlayerToExistingTeam("def", "abc"))
                 .assertNext(team -> {
@@ -72,8 +74,8 @@ class TeamServiceTest {
 
     @Test
     void getAllTeams() {
-        when(teamRepository.findAll()).thenReturn(Flux.just(new Team(null, "LFC", null),
-                new Team(null, "LAFC", null)));
+        when(teamRepository.findAll()).thenReturn(Flux.just(new Team(null, "Liverpool", "LFC", null),
+                new Team(null, "Los Angeles FC","LAFC", null)));
         StepVerifier.create(service.getAllTeams())
                 .expectNextCount(2)
                 .verifyComplete();

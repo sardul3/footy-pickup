@@ -1,7 +1,5 @@
 package com.sardul3.footypickup.validation.playerposition;
 
-import com.sardul3.footypickup.validation.playerposition.PlayerPositionValidator;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.List;
@@ -16,7 +14,7 @@ public class PlayerPositionValidatorLogic implements ConstraintValidator<PlayerP
     public void initialize(PlayerPositionValidator annotation) {
         acceptedValues = Stream.of(annotation.enumClass().getEnumConstants())
                 .map(Enum::name)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

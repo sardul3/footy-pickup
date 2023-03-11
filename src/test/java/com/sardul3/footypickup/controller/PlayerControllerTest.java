@@ -39,7 +39,7 @@ class PlayerControllerTest {
     @Test
     void createPlayerPost() {
        var player = new Player(null, "John", "B",
-                13, "RB", false);
+                13, "RB", false, null);
 
        webTestClient
                .post()
@@ -58,7 +58,7 @@ class PlayerControllerTest {
     void createPlayer_withInvalidShirtNumber_shouldThrowBadRequest() {
         // shirt number should be in the range of 1 to 100
         var player = new Player(null, "John", "B",
-                125, "RB", false);
+                125, "RB", false, null);
 
         webTestClient
                 .post()
@@ -78,7 +78,7 @@ class PlayerControllerTest {
     void createPlayer_withEmptyFirstName_shouldThrowBadRequest() {
         // First Name cannot be empty
         var player = new Player(null, "", "B",
-                25, "RB", false);
+                25, "RB", false, null);
 
         webTestClient
                 .post()
@@ -98,7 +98,7 @@ class PlayerControllerTest {
     void createPlayer_withEmptyPlayerPosition_shouldThrowBadRequest() {
         // First Name cannot be empty
         var player = new Player(null, "S", "B",
-                25, null, false);
+                25, null, false, null);
 
         webTestClient
                 .post()
@@ -118,7 +118,7 @@ class PlayerControllerTest {
     void createPlayer_withInvalidPlayerPosition_shouldThrowBadRequest() {
         // First Name cannot be empty
         var player = new Player(null, "", "B",
-                25, "LIWB", false);
+                25, "LIWB", false, null);
 
         webTestClient
                 .post()
@@ -137,7 +137,7 @@ class PlayerControllerTest {
     @Test
     void createPlayer_returnsAHateosValidResponse() {
         var player = new Player(null, "John", "Bigsby",
-                25, "LB", false);
+                25, "LB", false, null);
 
         webTestClient
                 .post()

@@ -18,7 +18,6 @@ import java.util.List;
 import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
 
-//TODO: research in depth on HATEAOS
 public class ResourceGenerator {
     private ResourceGenerator() {}
 
@@ -27,15 +26,13 @@ public class ResourceGenerator {
         Mono<Link> createdPlayerLink = linkTo(methodOn(controllerClass).createPlayerPost(player)).withRel("player").toMono();
         Mono<Link> allPlayersLink = linkTo(methodOn(controllerClass).getAllPlayers()).withRel("all_players").toMono();
         Mono<List<Link>> entityLinkList = Flux.concat(createdPlayerLink, allPlayersLink).collectList();
-        Mono<EntityModel<Player>> entityMono = entityLinkList.map(links -> EntityModel.of(player, links));
-        return entityMono;
+        return entityLinkList.map(links -> EntityModel.of(player, links));
     }
 
     public static Mono<EntityModel<Flux<Player>>> getPlayersResource(Flux<Player> players) {
         Class<PlayerController> controllerClass = PlayerController.class;
         Mono<Link> allPlayersLink = linkTo(methodOn(controllerClass).getAllPlayers()).withRel("all_players").toMono();
-        Mono<EntityModel<Flux<Player>>> entityMono = allPlayersLink.map(links -> EntityModel.of(players, links));
-        return entityMono;
+        return allPlayersLink.map(links -> EntityModel.of(players, links));
     }
 
     public static Mono<EntityModel<Team>> getTeamResource(Team team) {
@@ -45,8 +42,7 @@ public class ResourceGenerator {
                                         .createNewTeam(modelMapper.map(team, CreateTeamRequest.class)))
                                         .withRel("team").toMono();
         Mono<List<Link>> entityLinkList = Flux.concat(createdTeamLink).collectList();
-        Mono<EntityModel<Team>> entityMono = entityLinkList.map(links -> EntityModel.of(team, links));
-        return entityMono;
+        return entityLinkList.map(links -> EntityModel.of(team, links));
     }
 
     public static Mono<EntityModel<Match>> getMatchResource(Match match) {
@@ -55,7 +51,6 @@ public class ResourceGenerator {
                 .createMatchPost(match))
                 .withRel("match").toMono();
         Mono<List<Link>> entityLinkList = Flux.concat(createdMatchLink).collectList();
-        Mono<EntityModel<Match>> entityMono = entityLinkList.map(links -> EntityModel.of(match, links));
-        return entityMono;
+        return entityLinkList.map(links -> EntityModel.of(match, links));
     }
 }

@@ -15,12 +15,13 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TeamControllerTest {
+class TeamControllerTest {
 
     @Mock
     TeamService teamService;
@@ -30,12 +31,12 @@ public class TeamControllerTest {
 
     @Test
     void addPlayerToTeam_shouldReturnTeamWithNewPlayer() {
-        var tiger_players = List.of(
-                new Player("p1", "Angel", "Gyawali", 5, PlayerPosition.CB.name(), false),
-                new Player("p2", "Rahul", "Gauli", 10, PlayerPosition.CM.name(), false)
+        var tiger_players = Set.of(
+                new Player("p1", "Angel", "Gyawali", 5, PlayerPosition.CB.name(), false, null),
+                new Player("p2", "Rahul", "Gauli", 10, PlayerPosition.CM.name(), false, null)
         );
 
-        var team = new Team("t1", "Tigers FC", tiger_players);
+        var team = new Team("t1", "Tigers FC", "TFC", tiger_players);
 
         when(teamService.addPlayerToExistingTeam(any(), any()))
                 .thenReturn(Mono.just(team));

@@ -14,12 +14,13 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MatchControllerTest {
+class MatchControllerTest {
 
     @Mock
     MatchService matchService;
@@ -48,7 +49,7 @@ public class MatchControllerTest {
     void addTeams_toMatch_shouldReturnNewMatch() {
         Match match = Match.builder().numberOfPlayersPerSide(5).build();
 
-        match.setTeams(List.of(new Team(null, "Tigers FC", null)
+        match.setTeams(Set.of(new Team(null, "Tigers FC","TFC", null)
                 ));
         when(matchService.addteamToExistingMatch(any(), any()))
                 .thenReturn(Mono.just(match));

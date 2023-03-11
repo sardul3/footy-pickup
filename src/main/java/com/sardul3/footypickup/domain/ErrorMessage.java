@@ -18,5 +18,5 @@ public class ErrorMessage {
     private HttpStatus status;
     private String code;
     private String message;
-    private List errors;
+    private List<String> errors;
 }

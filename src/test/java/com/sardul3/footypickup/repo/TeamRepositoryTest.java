@@ -11,7 +11,9 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,19 +26,19 @@ class TeamRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        var lion_players = List.of(
-                new Player(null, "Sagar", "Poudel", 3, PlayerPosition.LB.name(), true),
-                new Player(null, "Anup", "Ghimire", 1, PlayerPosition.GK.name(), false)
+        var lion_players = Set.of(
+                new Player(null, "Sagar", "Poudel", 3, PlayerPosition.LB.name(), true, null),
+                new Player(null, "Anup", "Ghimire", 1, PlayerPosition.GK.name(), false, null)
         );
 
-        var tiger_players = List.of(
-                new Player(null, "Angel", "Gyawali", 5, PlayerPosition.CB.name(), false),
-                new Player(null, "Rahul", "Gauli", 10, PlayerPosition.CM.name(), false)
+        var tiger_players = Set.of(
+                new Player(null, "Angel", "Gyawali", 5, PlayerPosition.CB.name(), false, null),
+                new Player(null, "Rahul", "Gauli", 10, PlayerPosition.CM.name(), false, null)
         );
 
-        var teams = List.of(
-          new Team(null, "Tigers FC", tiger_players),
-          new Team(null,"Lions FC", lion_players)
+        var teams = Set.of(
+          new Team(null, "Tigers FC", "TFC", tiger_players),
+          new Team(null,"Lions FC", "LFC", lion_players)
         );
         repository.saveAll(teams).blockLast();
     }
@@ -48,7 +50,9 @@ class TeamRepositoryTest {
 
     @Test
     void saveShouldCreateANewTeam() {
-        Team team = new Team(null, "Reds FC", null);
+        Team team = new Team("adasd", "Reds FC", "RFC", Set.of(
+                new Player("fadjl", "Sagar", "Poudel", 3, PlayerPosition.LB.name(), true, new ArrayList<>())
+                ));
         StepVerifier.create(repository.save(team))
                 .assertNext(createdTeam -> {
                     assert createdTeam.getId() != null;
