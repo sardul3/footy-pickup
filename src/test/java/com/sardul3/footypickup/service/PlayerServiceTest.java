@@ -37,7 +37,7 @@ class PlayerServiceTest {
 
     @Test
     void addPlayer() {
-        var player = new Player(null, "S", "P", 7, PlayerPosition.ST.name(), false);
+        var player = new Player(null, "S", "P", 7, PlayerPosition.ST.name(), false, null);
         when(playerRepository.save(player)).thenReturn(Mono.just(player));
         StepVerifier.create(playerService.addPlayer(player))
                 .expectNextCount(1)

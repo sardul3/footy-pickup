@@ -23,10 +23,6 @@ class MatchControllerTest {
     MatchService matchService;
 
     @Test
-    void startMatch() {
-    }
-
-    @Test
     void createMatchPost() {
         Match match = Match.builder()
                 .numberOfPlayersPerSide(5)
