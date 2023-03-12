@@ -26,6 +26,7 @@ public class Team {
 
 //    @NotEmpty( message="{team.players.minimum.message}")
 //    @TeamPlayersValidator
+    @Field
     private Set<Player> players = new HashSet<>();
 
     public Team() {

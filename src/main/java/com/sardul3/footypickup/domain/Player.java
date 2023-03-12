@@ -1,8 +1,6 @@
 package com.sardul3.footypickup.domain;
 
 
-import com.sardul3.footypickup.domain.events.GoalEvent;
-import com.sardul3.footypickup.domain.events.RedCardEvent;
 import com.sardul3.footypickup.validation.playerposition.PlayerPositionValidator;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -46,17 +44,14 @@ public class Player {
     @Indexed
     private boolean isCaptain;
 
-    private List<RedCardEvent> redCardEvents = new ArrayList<>();
-
-    public Player(String id, String firstName, String lastName, int shirtNumber, String playerPosition, boolean isCaptain, List<RedCardEvent> redCardEvents) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.shirtNumber = shirtNumber;
-        this.playerPosition = playerPosition;
-        this.isCaptain = isCaptain;
-        this.redCardEvents = redCardEvents;
-    }
+//    public Player(String id, String firstName, String lastName, int shirtNumber, String playerPosition, boolean isCaptain) {
+//        this.id = id;
+//        this.firstName = firstName;
+//        this.lastName = lastName;
+//        this.shirtNumber = shirtNumber;
+//        this.playerPosition = playerPosition;
+//        this.isCaptain = isCaptain;
+//    }
 
     private List<GoalEvent> goalEvents = new ArrayList<>();
 }

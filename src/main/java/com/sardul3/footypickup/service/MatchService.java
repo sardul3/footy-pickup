@@ -1,7 +1,7 @@
 package com.sardul3.footypickup.service;
 
 import com.sardul3.footypickup.domain.Match;
-import com.sardul3.footypickup.domain.events.GoalEvent;
+import com.sardul3.footypickup.domain.ScoreCard;
 import com.sardul3.footypickup.exception.custom.EmptyResourceCollectionException;
 import com.sardul3.footypickup.exception.custom.MatchHasInvalidNumberOfTeamsException;
 import com.sardul3.footypickup.exception.custom.ResourceNotFoundException;
@@ -14,8 +14,13 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Service
 @Slf4j
@@ -83,39 +88,131 @@ public class MatchService {
                 });
     }
 
-    public Mono<Match> addCardToAnOngoingMatch(String matchId, String teamId, String playerId) {
-        return matchRepository.findById(matchId)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("{match.error.not-found}")))
-                .zipWith(teamRepository.findById(teamId)
-                        .switchIfEmpty(Mono.error(new ResourceNotFoundException("Team could not be found"))))
-                        .zipWith(playerRepository.findById(playerId))
-                        .flatMap(tuple -> {
-                            var player = tuple.getT2();
-                            List<GoalEvent> goals = player.getGoalEvents();
-                            if(goals==null) goals=List.of(new GoalEvent());
-                            else goals.add(new GoalEvent());
-                            player.setGoalEvents(goals);
-                            playerRepository.save(player);
-                            teamRepository.save(tuple.getT1().getT2());
-                            return matchRepository.save(tuple.getT1().getT1());
-                        });
+    public Mono<Match> addGoalToAnOngoingMatch(String matchId, String teamId, String playerId) {
+        return matchRepository.addGoalEvent(matchId, teamId, playerId);
     }
 
-    public Mono<Match> addGoalToAnOngoingMatch(String matchId, String teamId, String playerId) {
-        return matchRepository.findById(matchId)
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("{match.error.not-found}")))
-                .zipWith(teamRepository.findById(teamId)
-                        .switchIfEmpty(Mono.error(new ResourceNotFoundException("Team could not be found"))))
-                .zipWith(playerRepository.findById(playerId))
-                .flatMap(tuple -> {
-                    var player = tuple.getT2();
-                    List<GoalEvent> goals = player.getGoalEvents();
-                    if(goals==null) goals=List.of(new GoalEvent());
-                    else goals.add(new GoalEvent());
-                    player.setGoalEvents(goals);
-                    playerRepository.save(player);
-                    teamRepository.save(tuple.getT1().getT2());
-                    return matchRepository.save(tuple.getT1().getT1());
-                });
+    public Mono<Match> retrieveMatch(String id) {
+        return matchRepository.findById(id)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Match not found")));
     }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor)
+    {
+        Map<Object, Boolean> map = new ConcurrentHashMap<>();
+        return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+    }
+
+    public Mono<ScoreCard> endMatch(String matchId) {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        return matchRepository.findById(matchId)
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Match could not be found")))
+                .flatMap(match -> {
+                    match.getGoals().stream().forEach(te -> {
+                                var team = teamRepository.findById(te.getId())
+                                        .subscribe(t -> {
+                                            if(!map.containsKey(t.getName())) {
+                                                map.put(t.getName(), 1);
+                                            } else {
+                                                int currentGoals = map.get(t.getName());
+                                                map.put(t.getName(), currentGoals+1);
+                                            }
+                                            return;
+                                        });
+                                return;
+                            });
+                    log.info(String.valueOf(map));
+                    return Mono.just(new ScoreCard(map));
+                });
+
+    }
+//    public Mono<Match> addCardToAnOngoingMatch(String matchId, String teamId, String playerId) {
+//
+//        return matchRepository.findById(matchId)
+//                .switchIfEmpty(Mono.error(new ResourceNotFoundException("{match.error.not-found}")))
+//                .zipWith(teamRepository.findById(teamId)
+//                        .switchIfEmpty(Mono.error(new ResourceNotFoundException("Team could not be found"))))
+//                        .zipWith(playerRepository.findById(playerId))
+//                        .flatMap(tuple -> {
+//                            var player = tuple.getT2();
+//                            List<GoalEvent> goals = player.getGoalEvents();
+////                            if(goals==null) goals=List.of(new GoalEvent());
+////                            else goals.add(new GoalEvent());
+//                            player.setGoalEvents(goals);
+//                            playerRepository.save(player);
+//                            teamRepository.save(tuple.getT1().getT2());
+//                            return matchRepository.save(tuple.getT1().getT1());
+//                        });
+//    }
+//
+//    public Mono<Match> addGoalToAnOngoingMatch(String matchId, String teamId, String playerId) {
+//        var data = matchRepository.findById(matchId)
+//                .zipWith(teamRepository.findById(teamId)
+//                .zipWith(playerRepository.findById(playerId)));
+//        return  data.flatMap(tuple -> {
+//            var t  = tuple.getT2().getT1();
+//            var p = tuple.getT2().getT2();
+//            var m = tuple.getT1();
+//
+//            var g = GoalEvent.builder().goalBy(p.getFirstName()).build();
+//            p.getGoalEvents().add(g);
+//            playerRepository.save(p);
+//            var savedP = playerRepository.findById(playerId)
+//                    .doOnSuccess( ps -> System.out.println(ps));
+//            log.info(String.valueOf(savedP));
+//
+//
+//
+//
+//            t.getPlayers().stream().forEach(te -> {
+//                if(te.getId().equalsIgnoreCase(p.getId())) {
+//                    te = p;
+//                }
+//            });
+//            m.getTeams().stream().forEach(xy -> {
+//                if(xy.getId().equalsIgnoreCase(m.getId())) {
+//                    xy.getPlayers().stream().forEach(pp -> {
+//                        pp.getGoalEvents().add(g);
+//                        playerRepository.save(pp);
+//                    });
+//                    teamRepository.save(xy);
+//                }
+//            });
+//            playerRepository.save(p);
+//            teamRepository.save(t);
+//            return matchRepository.save(m);
+//        });
+//
+//
+//
+//
+//
+////        return matchRepository.findById(matchId)
+////                .switchIfEmpty(Mono.error(new ResourceNotFoundException("{match.error.not-found}")))
+////                .zipWith(teamRepository.findById(teamId)
+////                        .switchIfEmpty(Mono.error(new ResourceNotFoundException("Team could not be found"))))
+////                .zipWith(playerRepository.findById(playerId))
+////                .flatMap(tuple -> {
+////                    var player = tuple.getT2();
+////                    // define custom queries
+////                    List<GoalEvent> goals = player.getGoalEvents();
+////                    var newGoal = GoalEvent.builder().goalBy(player.getFirstName()).build();
+////                    if(goals==null) goals=List.of(newGoal);
+////                    else goals.add(newGoal);
+////                    player.setGoalEvents(goals);
+////                    playerRepository.save(player);
+////                    var team = tuple.getT1().getT2();
+////                    var x = team.getPlayers().stream().filter(p -> p.getId()==playerId)
+////                                    .map(player1 -> {
+////                                        player1.getGoalEvents().add(newGoal);
+////
+////                                        return player1;
+////                                    }).collect(Collectors.toList()).get(0);
+////
+////                    teamRepository.save(tuple.getT1().getT2());
+////                    var y = tuple.getT1().getT1().getTeams().stream().filter(team1 -> team1.getId()==teamId)
+////                            .map(team1 -> team1 = team).toString();
+////                    return matchRepository.save(tuple.getT1().getT1());
+////                });
+//    }
 }
