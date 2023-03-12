@@ -1,6 +1,5 @@
 package com.sardul3.footypickup.domain;
 
-import com.sardul3.footypickup.domain.events.RedCardEvent;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.*;
@@ -18,8 +17,8 @@ import java.util.Set;
 @Document
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Match {
-//    @MongoId(FieldType.OBJECT_ID)
     @Id
     private String id;
 
@@ -32,13 +31,15 @@ public class Match {
     private boolean gameStarted = false;
     private boolean gameEnded = false;
 
-//    @DocumentReference
-    private Set<Team> teams;
+    @Field
+    private Set<Team> teams = new HashSet<>();
 
-    private List<RedCardEvent> events = new ArrayList<>();
+    @Field
+    private List<GoalEvent> goals = new ArrayList<>();
 
-    public Match() {
-        this.teams = new HashSet<>();
-    }
+
+//    public Match() {
+//        this.teams = new HashSet<>();
+//    }
 
 }

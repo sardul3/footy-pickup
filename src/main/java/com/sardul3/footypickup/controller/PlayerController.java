@@ -36,4 +36,17 @@ public class PlayerController {
         ResponseEntity<Flux<Player>> response = ResponseEntity.status(HttpStatus.OK).body(players);
         return Mono.just(response);
     }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public Mono<ResponseEntity<Mono<EntityModel<Player>>>> getPlayer(@PathVariable String id) {
+        return playerService.getPlayerById(id)
+                .map(ResourceGenerator::getPlayerResource)
+                .map(playerEntityModel -> ResponseEntity.status(HttpStatus.CREATED).body(playerEntityModel));
+
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<Void> deletePlayer(@PathVariable String id) {
+        return playerService.deletePlayer(id);}
 }

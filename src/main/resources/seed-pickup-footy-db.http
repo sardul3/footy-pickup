@@ -1,3 +1,6 @@
+
+
+###
 ### CreatePlayerNo1
 POST http://localhost:8080/v1/players
 Content-Type: application/json
@@ -17,11 +20,11 @@ POST http://localhost:8080/v1/players
 Content-Type: application/json
 
 {
-"firstName" : "Rahul",
-"lastName" : "Gauli",
-"shirtNumber": 10,
-"playerPosition": "CM",
-"isCaptain": false
+  "firstName" : "Rahul",
+  "lastName" : "Gauli",
+  "shirtNumber": 10,
+  "playerPosition": "CM",
+  "isCaptain": false
 }
 > {%
     client.global.set("p2", response.body.id);
@@ -160,105 +163,8 @@ Content-Type: application/json
 
 {}
 
-
-###
-GET http://localhost:8080/v1/players/640d3ea70b048e5fb19113b1
-Accept: application/json
-
-
-
-###
-POST http://localhost:8080/v1/matches/64097fdc56b85a66944db14f/team/64097fee56b85a66944db150/player/6409651f4fef226e2db9fd13/card
+### EndTheMatch
+POST http://localhost:8080/v1/matches/{{match}}/end
 Content-Type: application/json
 
 {}
-
-###
-POST http://localhost:8080/v1/players/6409669bdfb04b26afe5c94e/goal
-Content-Type: application/json
-
-{
-  "eventId": "GOAL",
-  "goalBy": "testUser"
-}
-
-###
-POST http://localhost:8080/v1/players/640c1f92d1a30b2e871b10eb/card/red
-Content-Type: application/json
-
-{
-  "eventId": "RED_CARD",
-  "receivedBy": "testUser"
-}
-
-###
-
-
-###
-// PLAYER
-
-### create a player
-POST http://localhost:8080/v1/players
-Content-Type: application/json
-
-{
-  "firstName" : "Anup",
-  "lastName" : "Ghimire",
-  "shirtNumber": 1,
-  "playerPosition": "GK",
-  "isCaptain": false
-}
-
-### Get all players
-GET http://localhost:8080/v1/players
-Accept: application/json
-
-// TEAM
-### Create a team
-POST http://localhost:8080/v1/teams
-Content-Type: application/json
-
-{
-  "name": "Full FC"
-}
-### Add a player to the team
-POST http://localhost:8080/v1/teams/640c1a1ea6918b354322ce15/player/640c18445e72ac2c52a900e8/add
-
-### Get the list of all teams
-GET http://localhost:8080/v1/teams
-Accept: application/json
-
-
-// Matches
-### Create a new match
-POST http://localhost:8080/v1/matches
-Content-Type: application/json
-
-{
-  "numberOfPlayersPerSide": 3
-}
-
-### Add a team to the match
-POST http://localhost:8080/v1/matches/64097fdc56b85a66944db14f/team/640c133120d77f458a44357b/add
-
-### start a match
-POST http://localhost:8080/v1/matches/640c166f2930833af4e1f575/start
-Content-Type: application/json
-
-{}
-
-###
-POST http://localhost:8080/v1/players
-Content-Type: application/json
-
-{
-  "firstName" : "Rahul",
-  "lastName" : "Gauli",
-  "shirtNumber": 22,
-  "playerPosition": "ST",
-  "isCaptain": "true"
-}
-
-
-
-
