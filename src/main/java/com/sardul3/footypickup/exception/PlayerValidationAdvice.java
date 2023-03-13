@@ -3,6 +3,7 @@ package com.sardul3.footypickup.exception;
 import com.sardul3.footypickup.domain.ErrorMessage;
 import com.sardul3.footypickup.domain.WarningMessage;
 import com.sardul3.footypickup.exception.custom.*;
+import io.micrometer.core.annotation.Timed;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
 public class PlayerValidationAdvice {
 
     @ExceptionHandler(WebExchangeBindException.class)
+    @Timed(value="errors.validation")
     public ResponseEntity<ErrorMessage> handleValidationErrors(WebExchangeBindException exception) {
         var errors = exception
                 .getAllErrors()
@@ -41,6 +43,7 @@ public class PlayerValidationAdvice {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
+    @Timed(value="errors.match.not.found")
     public ResponseEntity<ErrorMessage> handleMatchNotFound(ResourceNotFoundException exception) {
         var errors = List.of(exception
                 .getLocalizedMessage());
@@ -57,6 +60,7 @@ public class PlayerValidationAdvice {
     }
 
     @ExceptionHandler(MatchHasInvalidNumberOfTeamsException.class)
+    @Timed(value="errors.invalid.teams.in.match")
     public ResponseEntity<ErrorMessage> handleInvalidTeamsInAMatch(MatchHasInvalidNumberOfTeamsException exception) {
         var errors = List.of(exception
                 .getLocalizedMessage());
@@ -72,6 +76,7 @@ public class PlayerValidationAdvice {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
+    @Timed(value="errors.invalid.request.format")
     public ResponseEntity<ErrorMessage> handleInvalidRequestFormat(HttpMessageNotReadableException exception) {
         var errors = List.of(exception
                 .getLocalizedMessage());
@@ -87,6 +92,7 @@ public class PlayerValidationAdvice {
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @Timed(value="errors.duplicate.resource.found")
     public ResponseEntity<ErrorMessage> handleDuplicateResourceKey(ResourceAlreadyExistsException exception) {
         var errors = List.of(exception
                 .getLocalizedMessage());
@@ -102,6 +108,7 @@ public class PlayerValidationAdvice {
     }
 
     @ExceptionHandler(EmptyResourceCollectionException.class)
+    @Timed(value="errors.resource.not.found")
     public ResponseEntity<WarningMessage> handleNoResourcesPresent(EmptyResourceCollectionException exception) {
         var warning = exception.getLocalizedMessage();
 
@@ -115,6 +122,7 @@ public class PlayerValidationAdvice {
     }
 
     @ExceptionHandler(TeamDoesNotHaveMinimumNumberOfPlayersException.class)
+    @Timed(value="errors.invalid.number.of.players")
     public ResponseEntity<WarningMessage> handleUnbalancedPlayersInTeams(TeamDoesNotHaveMinimumNumberOfPlayersException exception) {
         var warning = exception.getLocalizedMessage();
 
@@ -127,6 +135,7 @@ public class PlayerValidationAdvice {
     }
 
     @ExceptionHandler(PlayerAlreadyExistsException.class)
+    @Timed(value="errors.player.already.exists")
     public ResponseEntity<WarningMessage> handlePlayerAlreadyExistsInTeam(PlayerAlreadyExistsException exception) {
         var warning = exception.getLocalizedMessage();
 
