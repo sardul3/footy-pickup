@@ -16,6 +16,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -37,6 +38,9 @@ class MatchServiceTest {
 
     @Mock
     TeamRepository teamRepository;
+
+    @Mock
+    ApplicationEventPublisher publisher;
 
     @InjectMocks
     MatchService matchService;

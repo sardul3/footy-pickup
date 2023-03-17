@@ -1,6 +1,7 @@
 package com.sardul3.footypickup.service;
 
 import com.sardul3.footypickup.domain.Match;
+import com.sardul3.footypickup.domain.MatchStartedEvent;
 import com.sardul3.footypickup.domain.ScoreCard;
 import com.sardul3.footypickup.exception.custom.EmptyResourceCollectionException;
 import com.sardul3.footypickup.exception.custom.MatchHasInvalidNumberOfTeamsException;
@@ -10,13 +11,13 @@ import com.sardul3.footypickup.repo.MatchRepository;
 import com.sardul3.footypickup.repo.PlayerRepository;
 import com.sardul3.footypickup.repo.TeamRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -28,11 +29,13 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
     private final PlayerRepository playerRepository;
+    private final ApplicationEventPublisher publisher;
 
-    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, PlayerRepository playerRepository) {
+    public MatchService(MatchRepository matchRepository, TeamRepository teamRepository, PlayerRepository playerRepository, ApplicationEventPublisher publisher) {
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.playerRepository = playerRepository;
+        this.publisher = publisher;
     }
 
     public Mono<Match> createNewFootballMatch(Match match) {
@@ -58,7 +61,7 @@ public class MatchService {
 
                     }
                     return Mono.error(new MatchHasInvalidNumberOfTeamsException("Match must have exactly 2 teams"));
-                });
+                }).doOnSuccess(match -> publisher.publishEvent(new MatchStartedEvent(match)));
     }
 
 
